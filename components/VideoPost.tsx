@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Heart, Plus, Volume2, VolumeX } from 'lucide-react';
+import { Heart, Plus, Volume2, VolumeX, Check } from 'lucide-react';
 import { VideoData } from '../types';
 import { ProductCarousel } from './ProductCarousel';
 
@@ -12,6 +12,7 @@ export const VideoPost: React.FC<VideoPostProps> = ({ data, isActive }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
   // Play/Pause Logic based on active state
@@ -46,6 +47,11 @@ export const VideoPost: React.FC<VideoPostProps> = ({ data, isActive }) => {
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
+  };
+
+  const handleFollow = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsFollowing(!isFollowing);
   };
 
   return (
@@ -87,9 +93,22 @@ export const VideoPost: React.FC<VideoPostProps> = ({ data, isActive }) => {
           <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden">
             <img src={data.avatarUrl} alt="User" className="w-full h-full object-cover" />
           </div>
-          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-pink-500 rounded-full w-5 h-5 flex items-center justify-center">
-            <Plus size={12} className="text-white font-bold" />
-          </div>
+          
+          {/* Interactive Follow Button */}
+          <button 
+            onClick={handleFollow}
+            className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 flex items-center justify-center rounded-full transition-all duration-300 active:scale-90 ${
+              isFollowing 
+                ? 'bg-white scale-0 opacity-0' 
+                : 'bg-pink-500 scale-100 opacity-100'
+            }`}
+          >
+            {isFollowing ? (
+               <Check size={12} className="text-pink-500" /> 
+            ) : (
+               <Plus size={12} className="text-white font-bold" />
+            )}
+          </button>
         </div>
 
         {/* Like Button */}
